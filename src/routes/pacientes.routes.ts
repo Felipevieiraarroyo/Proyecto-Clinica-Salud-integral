@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { authorize } from "../middlewares/authorize.middleware.js";
+import { verifyToken } from "../middlewares/auth.middleware.js";
 
 import {
   createPatientController,
@@ -10,10 +12,26 @@ import { validatePatient } from "../middlewares/validar-paciente.js";
 
 const router = Router();
 
-router.post("/", validatePatient, createPatientController);
+router.post(
+  "/",
+  verifyToken,
+  authorize("RECEPCIONISTA"),
+  validatePatient,
+  createPatientController
+);
 
-router.get("/", getPatientsController);
+router.get(
+  "/",
+  verifyToken,
+  authorize("RECEPCIONISTA"),
+  getPatientsController
+);
 
-router.get("/:id", getPatientByIdController);
+router.get(
+  "/:id",
+  verifyToken,
+  authorize("RECEPCIONISTA"),
+  getPatientByIdController
+);
 
 export default router;
