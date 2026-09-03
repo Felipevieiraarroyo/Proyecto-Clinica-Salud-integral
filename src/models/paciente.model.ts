@@ -1,0 +1,23 @@
+import { prisma } from "../prisma.js";
+
+export function createPatient(data: {
+  nombre: string;
+  apellido: string;
+  fechaNacimiento: Date;
+  telefono: string;
+  email: string;
+}) {
+  return prisma.paciente.create({
+    data,
+  });
+}
+
+export function getAllPatients() {
+  return prisma.paciente.findMany();
+}
+
+export function getPatientById(id: number) {
+  return prisma.paciente.findUnique({
+    where: { id },
+  });
+}
