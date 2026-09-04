@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "consulta" ALTER COLUMN "estado" SET DEFAULT 'PROGRAMADA';

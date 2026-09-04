@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type IRouter } from "express";
 
 import {
   createPatientController,
@@ -8,7 +8,7 @@ import {
 
 import { validatePatient } from "../middlewares/validar-paciente.js";
 
-const router = Router();
+const router: IRouter = Router();
 
 router.post("/", validatePatient, createPatientController);
 
