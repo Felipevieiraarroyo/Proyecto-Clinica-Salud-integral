@@ -15,7 +15,13 @@ import { authorize } from "../middlewares/authorize.middleware.js";
 
 const router: IRouter = Router();
 
-router.post("/", validateAppointment, createAppointmentController);
+router.post(
+  "/",
+  verifyToken,
+  authorize("RECEPCIONISTA"),
+  validateAppointment,
+  createAppointmentController
+);
 router.patch(
   "/:id/status",
   verifyToken,
