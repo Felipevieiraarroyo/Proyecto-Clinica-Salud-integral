@@ -19,3 +19,8 @@ export function getAllDoctors(specialtyName?: string) {
     },
   });
 }
+export function getDoctorById(id: number) {
+  return prisma.medico.findUnique({
+    where: { id },
+  });
+}
