@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 
 import {
   createAppointmentController,
+  getAllAppointmentsController,
   getDoctorAgendaController,
   updateAppointmentStatusController,
 } from "../controllers/appointment.controller.js";
@@ -20,21 +21,27 @@ router.post(
   verifyToken,
   authorize("RECEPCIONISTA"),
   validateAppointment,
-  createAppointmentController
+  createAppointmentController,
 );
 router.patch(
   "/:id/status",
   verifyToken,
   authorize("MEDICO"),
   validateAppointmentStatus,
-  updateAppointmentStatusController
+  updateAppointmentStatusController,
 );
 
 router.get(
   "/doctors/:id/appointments",
   verifyToken,
   authorize("MEDICO"),
-  getDoctorAgendaController
+  getDoctorAgendaController,
+);
+router.get(
+  "/",
+  verifyToken,
+  authorize("RECEPCIONISTA", "GERENCIA"),
+  getAllAppointmentsController,
 );
 
 export default router;

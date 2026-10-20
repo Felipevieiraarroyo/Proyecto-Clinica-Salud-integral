@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 
 import {
   createAppointment,
+  getAllAppointments,
   getDoctorAgenda,
   updateAppointmentStatus,
 } from "../models/appointment.model.js";
@@ -9,10 +10,7 @@ import {
 import { getPatientById } from "../models/paciente.model.js";
 import { getDoctorById } from "../models/doctor.model.js";
 
-export async function createAppointmentController(
-  req: Request,
-  res: Response
-) {
+export async function createAppointmentController(req: Request, res: Response) {
   try {
     const { pacienteId, medicoId, fechaHora } = req.body;
 
@@ -48,10 +46,7 @@ export async function createAppointmentController(
   }
 }
 
-export async function getDoctorAgendaController(
-  req: Request,
-  res: Response
-) {
+export async function getDoctorAgendaController(req: Request, res: Response) {
   try {
     const medicoId = Number(req.params.id);
 
@@ -65,11 +60,7 @@ export async function getDoctorAgendaController(
       toDate = new Date(String(to));
     }
 
-    const appointments = await getDoctorAgenda(
-      medicoId,
-      fromDate,
-      toDate
-    );
+    const appointments = await getDoctorAgenda(medicoId, fromDate, toDate);
 
     return res.json(appointments);
   } catch (error) {
@@ -82,7 +73,7 @@ export async function getDoctorAgendaController(
 }
 export async function updateAppointmentStatusController(
   req: Request,
-  res: Response
+  res: Response,
 ) {
   try {
     const id = Number(req.params.id);
@@ -96,6 +87,40 @@ export async function updateAppointmentStatusController(
 
     return res.status(404).json({
       error: "Cita no encontrada",
+    });
+  }
+}
+
+export async function getAllAppointmentsController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const estadoQuery = req.query.estado;
+
+    if (
+      estadoQuery !== undefined &&
+      estadoQuery !== "PROGRAMADA" &&
+      estadoQuery !== "COMPLETADA"
+    ) {
+      return res.status(400).json({
+        error: "Estado de consulta inválido",
+      });
+    }
+
+    const estado =
+      typeof estadoQuery === "string"
+        ? (estadoQuery as "PROGRAMADA" | "COMPLETADA")
+        : undefined;
+
+    const appointments = await getAllAppointments(estado);
+
+    return res.json(appointments);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      error: "Error al obtener las consultas",
     });
   }
 }
