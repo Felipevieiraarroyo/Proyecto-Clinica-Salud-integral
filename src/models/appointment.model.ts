@@ -13,11 +13,24 @@ export function createAppointment(data: {
   });
 }
 
-export function getDoctorAgenda(
-  medicoId: number,
-  from?: Date,
-  to?: Date
-) {
+export function getAllAppointments(estado?: "PROGRAMADA" | "COMPLETADA") {
+  return prisma.consulta.findMany({
+    where: estado ? { estado } : {},
+    include: {
+      paciente: true,
+      medico: {
+        include: {
+          especialidad: true,
+        },
+      },
+    },
+    orderBy: {
+      fechaHora: "asc",
+    },
+  });
+}
+
+export function getDoctorAgenda(medicoId: number, from?: Date, to?: Date) {
   return prisma.consulta.findMany({
     where: {
       medicoId,
@@ -41,7 +54,7 @@ export function getDoctorAgenda(
 
 export function updateAppointmentStatus(
   id: number,
-  estado: "COMPLETADA" | "CANCELADA"
+  estado: "COMPLETADA" | "CANCELADA",
 ) {
   return prisma.consulta.update({
     where: { id },
